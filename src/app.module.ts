@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConfig } from './config/db.config';
 import { Module } from '@nestjs/common';
 import { CoreModule } from './core/core.module';
-import { AuthModule } from './auth/auth.module'; 
+import { AuthModule } from './shared/modules/auth/auth.module'; 
 
 @Module({
   imports: [
