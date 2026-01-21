@@ -24,7 +24,7 @@ export class UserService {
 
     this.emailService.sendMail({
       to: result.email,
-      subject: "VALIDAÇÃO DE CONTA",
+      subject: "Account Validation",
       html: this.emailService.createHTML(result.username),
     });
 
