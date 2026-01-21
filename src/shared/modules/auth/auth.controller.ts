@@ -11,5 +11,8 @@ export class AuthController {
     @Body('password') password: string,
   ) {
     return this.authService.login(email, password);
+    
   }
+
+  
 }

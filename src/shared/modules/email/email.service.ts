@@ -18,19 +18,16 @@ export class EmailService {
     }
 
     public async sendMail(sendEmailDto: SendEmailDTO): Promise<void> {
-        try {
-            await this.transporter.sendMail({
-                from: `"Chat-Platform" <${this.configService.get<string>("EMAIL_ADDRESS")}>`,
-                ...sendEmailDto,
-            });
-        } catch (err){
-
-            console.log(err)
-            throw new Error(
-                "Sorry we are tackling internal issues, please try again later",
-            );
-        }
-    }
+  try {
+    await this.transporter.sendMail({
+      from: `"Chat-Platform" <${this.configService.get<string>("EMAIL_ADDRESS")}>`,
+      ...sendEmailDto,
+    });
+  } catch (err) {
+    console.error('NODEMAILER ERROR:', err);
+    throw err; // 👈 IMPORTANT: rethrow real error
+  }
+}
     public createHTML(username: string): string{
         return `
             <!DOCTYPE html>

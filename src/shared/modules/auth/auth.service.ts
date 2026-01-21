@@ -34,4 +34,6 @@ export class AuthService {
   async generateToken(payload: string): Promise<string> {
     return await this.jwtService.signAsync(payload)
   }
+  
 }
+
