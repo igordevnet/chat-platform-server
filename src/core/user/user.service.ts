@@ -1,10 +1,12 @@
-import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './repositories/user.repository';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { hashPassword } from '../security/password.util';
 import { AuthService } from 'src/shared/modules/auth/auth.service';
 import { AuthMessage } from 'src/shared/messages/auth-message';
 import { EmailService } from 'src/shared/modules/email/email.service';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { Message } from 'src/shared/messages/message';
 
 @Injectable()
 export class UserService {
@@ -28,11 +30,38 @@ export class UserService {
       html: this.emailService.createHTML(result.username),
     });
 
-    return { message: 'User created succefully', token: token, email: result.email, name: result.username }
+    return { message: 'User created successfully', token: token, email: result.email, name: result.username }
+  }
+
+  async updateUser(id: string, dto: UpdateUserDTO): Promise<Message> {
+
+    const user = await this.userRepository.findById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const { email } = user;
+
+    if (dto.password) {
+      dto.password = await hashPassword(dto.password);
+    }
+
+    if (dto.email && dto.email != email) {
+      await this.throwIfEmailIsUsed(dto.email);
+      dto.isEmailVerified = false;
+    }
+
+    await this.userRepository.updateUser(id, dto);
+    return { message: 'User updated successfully' }
   }
 
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
+  }
+
+  async findById(id: string) {
+    return this.userRepository.findById(id);
   }
 
   private async throwIfEmailIsUsed(email: string) {

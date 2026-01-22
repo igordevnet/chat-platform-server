@@ -15,7 +15,7 @@ export class User {
   password: string;
 
   @Prop({ default: false })
-  public isEmailVerified: boolean;
+  isEmailVerified: boolean;
 
   @Prop({ default: 'offline' })
   status: 'online' | 'offline';

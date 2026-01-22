@@ -25,7 +25,7 @@ export class EmailService {
     });
   } catch (err) {
     console.error('NODEMAILER ERROR:', err);
-    throw err; // 👈 IMPORTANT: rethrow real error
+    throw err;
   }
 }
     public createHTML(username: string): string{
