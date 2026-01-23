@@ -1,3 +1,3 @@
-export class Message{
+export interface Message{
     message: string;
 }
