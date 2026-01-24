@@ -19,4 +19,12 @@ export class MessageService {
     async deleteMessage(id: string) {
         return this.messageRepository.deleteMessage(id);
     }
+
+    async findMessageById(id: string): Promise<Message | null> {
+        return this.messageRepository.findMessageById(id);
+    }
+
+    async loadMessages(chatId: string): Promise<Message[] | null> {
+        return this.messageRepository.loadMessages(chatId);
+    }
 }

@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { CreateChatDTO } from "./dto/create-chat.dto";
 import { Chat } from "./entities/chat.entity";
 import { ChatService } from "./chat.service";
 import { UpdateChatDTO } from "./dto/update-chat.dto";
+import { AuthGuard } from "src/shared/modules/auth/guards/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller('Chat')
 export class ChatController {
 
@@ -11,7 +13,6 @@ export class ChatController {
 
     @Post()
     async createChat(@Body() createChatDto: CreateChatDTO): Promise<Chat> {
-        console.log('CONTROLLER DTO:', createChatDto);
         return this.chatService.createChat(createChatDto);
     }
 
@@ -23,5 +24,10 @@ export class ChatController {
     @Delete(':id')
     async deleteChat(@Param('id') id: string): Promise<void> {
         await this.chatService.deleteChat(id);
+    }
+
+    @Get(':id')
+    async getChatByUserId(@Param('id') userId: string): Promise<Chat[] | null> {
+        return await this.chatService.getChatByUserId(userId);
     }
 }

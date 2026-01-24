@@ -3,10 +3,10 @@ import { UserRepository } from './repositories/user.repository';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { hashPassword } from '../security/password.util';
 import { AuthService } from 'src/shared/modules/auth/auth.service';
-import { AuthMessage } from 'src/shared/messages/auth-message';
+import { AuthMessage } from 'src/shared/interfaces/messages/auth-message';
 import { EmailService } from 'src/shared/modules/email/email.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { Message } from 'src/shared/messages/message';
+import { Message } from 'src/shared/interfaces/messages/message';
 
 @Injectable()
 export class UserService {

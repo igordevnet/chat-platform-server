@@ -17,10 +17,18 @@ export class MessageRepository {
     }
 
     async updateMessage(id: string, updateMessageDto: UpdateMessageDTO): Promise<Message | null> {
-        return this.messageModel.findByIdAndUpdate(id, updateMessageDto)
+        return this.messageModel.findByIdAndUpdate(id, updateMessageDto).exec();
     }
 
-    async deleteMessage(id: string): Promise<void> { 
-        await this.messageModel.findByIdAndDelete(id);
+    async deleteMessage(id: string): Promise<void> {
+        await this.messageModel.findByIdAndDelete(id).exec();
+    }
+
+    async findMessageById(id: string): Promise<Message | null> {
+        return await this.messageModel.findById(id).exec();
+    }
+
+    async loadMessages(chatId: string): Promise<Message[] | null> {
+        return await this.messageModel.find({chatId}).exec();
     }
 }

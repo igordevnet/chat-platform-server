@@ -19,4 +19,10 @@ export class ChatService {
     async deleteChat(id: string): Promise<void> {
         await this.chatRepository.deleteChat(id);
     }
+
+    async getChatByUserId(userId: string): Promise<Chat[] | null> {
+        const chat = await this.chatRepository.getChatByUserId(userId);
+        
+        return chat;
+    }
 }

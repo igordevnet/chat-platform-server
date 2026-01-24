@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { UserDocument } from '../entities/user.entity';
 import { CreateUserDTO } from '../dto/create-user.dto';
 import { UpdateUserDTO } from '../dto/update-user.dto';
+import { GetUserDTO } from '../dto/get-user.dto';
 
 @Injectable()
 export class UserRepository {
@@ -18,14 +19,17 @@ export class UserRepository {
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDTO): Promise<void> {
-    await this.userModel.findByIdAndUpdate(id, updateUserDto)
+    await this.userModel.findByIdAndUpdate(id, updateUserDto).exec();
   }
 
   async findByEmail(email: string) {
-    return this.userModel.findOne({ email });
+    return this.userModel.findOne({ email }).exec();
   }
 
-  async findById(id: string): Promise<UserDocument | null> {
-    return this.userModel.findById(id).exec();
+  async findById(id: string): Promise<GetUserDTO | null> {
+    const user = await this.userModel.findById(id).lean().exec();
+    if (!user) return null;
+
+    return user as GetUserDTO;
   }
 }

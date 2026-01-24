@@ -1,7 +1,8 @@
-import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../../core/user/user.service';
 import { comparePassword } from '../../../core/security/password.util';
 import { JwtService } from '@nestjs/jwt';
+import { UserDocument } from 'src/core/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,29 @@ export class AuthService {
   async generateToken(payload: string): Promise<string> {
     return await this.jwtService.signAsync(payload)
   }
-  
+
+  async decodeToken(token: string): Promise<string> {
+    try {
+      return `${await this.jwtService.verifyAsync(token)}`;
+    } catch {
+      throw new BadRequestException("Please log in again.");
+    }
+  }
+
+  async getUserByToken(token: string) {
+    const payload = await this.decodeToken(token);
+
+    if (!payload) {
+      throw new ForbiddenException('Invalid token.');
+    }
+
+    const user = await this.userService.findById(payload);
+
+    if (!user) {
+      throw new ForbiddenException('User not found.');
+    }
+
+    return user;
+  }
 }
 

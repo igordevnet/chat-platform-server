@@ -16,10 +16,14 @@ export class ChatRepository {
     }
 
     async updateChat(id: string ,updateChatDto: UpdateChatDTO): Promise<Chat | null> {
-        return this.chatModel.findByIdAndUpdate(id, updateChatDto);
+        return this.chatModel.findByIdAndUpdate(id, updateChatDto).exec();
     }
 
     async deleteChat(id: string): Promise<void> {
-        await this.chatModel.findByIdAndDelete(id);
+        await this.chatModel.findByIdAndDelete(id).exec();
+    }
+
+    async getChatByUserId(userId: string): Promise<Chat[] | null> {
+        return await this.chatModel.find({ participants: userId }).exec();
     }
 }

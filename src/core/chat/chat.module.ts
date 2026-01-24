@@ -6,9 +6,11 @@ import { ChatService } from "./chat.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Chat, ChatSchema } from "./entities/chat.entity";
 import { ChatController } from "./chat.controller";
+import { AuthModule } from "src/shared/modules/auth/auth.module";
 
 @Module({
     imports: [
+        AuthModule,
         MessageModule, 
         MongooseModule.forFeature([{name: Chat.name, schema: ChatSchema}])
     ],

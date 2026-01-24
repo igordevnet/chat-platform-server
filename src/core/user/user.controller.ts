@@ -1,10 +1,11 @@
-import { Body, Controller, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { CreateUserDTO } from "./dto/create-user.dto";
-import { AuthMessage } from "src/shared/messages/auth-message";
+import { AuthMessage } from "src/shared/interfaces/messages/auth-message";
 import { UserService } from "./user.service";
 import { UpdateUserDTO } from "./dto/update-user.dto";
 import { ParseObjectIdPipe } from "@nestjs/mongoose";
-import { Message } from "src/shared/messages/message";
+import { Message } from "src/shared/interfaces/messages/message";
+import { AuthGuard } from "src/shared/modules/auth/guards/auth.guard";
 
 @Controller('users')
 export class UserController{
@@ -16,6 +17,7 @@ export class UserController{
         return this.userService.createUser(createUserDto);
     }
 
+    @UseGuards(AuthGuard)
     @Patch(':id')
     async updateUser(@Param("id", ParseObjectIdPipe) id: string, @Body() updateUserDto: UpdateUserDTO): Promise<Message> {
         return this.userService.updateUser(id, updateUserDto);

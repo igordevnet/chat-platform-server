@@ -1,8 +1,6 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from "socket.io";
 import { MessageService } from "../message/message.service";
-import { Body } from "@nestjs/common";
-import { CreateMessageDTO } from "../message/dto/create-message.dto";
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -23,21 +21,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('newMessage')
-    handleNewMessage(
+    async handleNewMessage(
         client: Socket, payload: { recipient: string, message: string },
     ) {
         console.log(`Message from ${client.id}: ${payload.message}`);
 
-        this.messageService.createMessage({
+        const createdMessage = await this.messageService.createMessage({
             sender: client.id,
             chatId: payload.recipient,
             message: payload.message,
         });
 
-        client.broadcast.emit('reply', {
+        this.server.emit('reply', {
             sender: client.id,
-            message: payload.message,
+            message: { createdMessage },
         });
+    }
+
+    @SubscribeMessage('updateMessage')
+    async handleUpdateMessage(
+        client: Socket, payload: { id: string, message: string }
+    ) {
+        await this.messageService.updateMessage(payload.id, { message: payload.message });
+
+        const updatedMessage = this.messageService.findMessageById(payload.id);
+
+        this.server.emit('reply', {
+            sender: client.id,
+            message: { updatedMessage }
+        })
     }
 
 }
